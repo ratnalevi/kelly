@@ -82,6 +82,35 @@ class OrderController extends Controller
         return json_encode($order);
     }
 
+    public function download()
+    {
+        $fileName = 'orders.csv';
+
+        $headers = array(
+            "Content-type"        => "text/csv",
+            "Content-Disposition" => "attachment; filename=$fileName",
+            "Pragma"              => "no-cache",
+            "Cache-Control"       => "must-revalidate, post-check=0, pre-check=0",
+            "Expires"             => "0"
+        );
+
+        $orders = Orders::where('is_valid', '=', '1')->get();
+        $columns = array('ID', 'Order Date', 'Region', 'Rep', 'Item', 'Quantity', 'Cost per item', 'Total', 'Created At', 'Update At');
+
+        $callback = function() use($orders, $columns) {
+            $file = fopen('php://output', 'w');
+            fputcsv($file, $columns);
+
+            foreach ($orders as $order) {
+                fputcsv($file, $order->toArray());
+            }
+
+            fclose($file);
+        };
+
+        return response()->stream($callback, 200, $headers);
+    }
+
 
 }
 

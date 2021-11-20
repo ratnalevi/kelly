@@ -19,6 +19,7 @@ Route::get('/', function () {
 
 
 Route::get('/orders', [\App\Http\Controllers\OrderController::class, 'index']);
+Route::get('/orders/csv', [\App\Http\Controllers\OrderController::class, 'download']);
 Route::post('/orders', [\App\Http\Controllers\OrderController::class, 'store']);
 Route::post('/orders/update', [\App\Http\Controllers\OrderController::class, 'update']);
 Route::post('/orders/delete', [\App\Http\Controllers\OrderController::class, 'delete']);
